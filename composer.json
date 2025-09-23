@@ -1,0 +1,18 @@
+{
+    "name": "ela/mud-cyberpunk",
+    "description": "MUD Cyberpunk - Arthur Leo Ethan",
+    "autoload": {
+        "psr-4": {
+            "Ela\\MudCyberpunk\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Azhega",
+            "email": "lethan986@gmail.com"
+        }
+    ],
+    "require": {
+        "jugid/staurie": "^1.3"
+    }
+}
