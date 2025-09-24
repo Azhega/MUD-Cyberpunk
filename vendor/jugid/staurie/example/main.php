@@ -5,9 +5,7 @@ use Jugid\Staurie\Component\Console\Console;
 use Jugid\Staurie\Component\Introduction\Introduction;
 use Jugid\Staurie\Component\Inventory\Inventory;
 use Jugid\Staurie\Component\Level\Level;
-
 use Jugid\Staurie\Component\Map\Map;
-
 use Jugid\Staurie\Component\Menu\Menu;
 use Jugid\Staurie\Component\Money\Money;
 use Jugid\Staurie\Component\PrettyPrinter\PrettyPrinter;
@@ -15,38 +13,30 @@ use Jugid\Staurie\Staurie;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-$staurie = new Staurie('My game');
-$staurie = new Staurie('Cyberpunk');
+$staurie = new Staurie('Example lands');
 $staurie->register([
-    Console::class,
-    PrettyPrinter::class,
-    MainCharacter::class,
-    Inventory::class,
+    Console::class, 
+    PrettyPrinter::class, 
+    MainCharacter::class, 
+    Inventory::class, 
     Level::class
 ]);
 
 $container = $staurie->getContainer();
 
-// Configure MainCharacter with proper starting stats
-$character = $container->registerComponent(MainCharacter::class);
-$character->configuration([
-    'statistics' => \Jugid\Staurie\Component\Character\Statistics::default()
-        ->add('ability', 10)   // Some attack power
-]);
-
 $menu = $container->registerComponent(Menu::class);
 $menu->configuration([
-    'text'=> 'Bienvenue a NightCity',
+    'text'=> 'Welcome to this awesome test adventure',
     'labels'=> [
-        'new_game' => "Commencer l'aventure",
-        'quit'=> 'Quitter le jeu',
+        'new_game' => 'Enter the world',
+        'quit'=> 'Exit game',
     ]
 ]);
 
 $map = $container->registerComponent(Map::class);
 $map->configuration([
     'directory'=>__DIR__.'/maps',
-    'namespace'=>'Ela\MudCyberpunk\Maps', 
+    'namespace'=>'Jugid\Staurie\Example\Maps', 
     'navigation'=>true,
     'map_enable'=>true,
     'compass_enable'=>true
@@ -55,17 +45,17 @@ $map->configuration([
 $introduction = $container->registerComponent(Introduction::class);
 $introduction->configuration([
     'text'=>[
-        'Votre oncle a besoin de vous, allez lui parler pour en savoir plus.',
-        ''
+        'This is an introduction to test the introduction component',
+        'You can use it multiline by using an array in configuration'
     ],
-    'title'=>'Chapter 1 : Les médoc de Djo',
+    'title'=>'Chapter 1 : The new game',
     'scrolling'=>false
 ]);
 
 $money = $container->registerComponent(Money::class);
 $money->configuration([
-    'name' => 'Crypto',
-    'start_with' => 0
+    'name' => 'Coda points',
+    'start_with' => 100
 ]);
 
 $staurie->run();
