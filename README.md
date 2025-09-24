@@ -17,7 +17,7 @@ Map :
 
 Aventure :
 - Un SDF par ruelle
-- Possibilité de lui parler et de se battre avec lui pour lui voler ses sous
+- Possibilité de leur parler et de se battre avec lui pour lui voler ses sous
 - Items récupérables sur les SDF : CyberVodka
 - Arrivé à la "Pharmacie" le dealer nous la met à l'envers : cachets toujours 1 crypto trop cher
 - On le tue pour récup les cachets

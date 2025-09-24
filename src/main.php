@@ -31,12 +31,12 @@ $container = $staurie->getContainer();
 $character = $container->registerComponent(MainCharacter::class);
 $character->configuration([
     'statistics' => \Jugid\Staurie\Component\Character\Statistics::default()
-        ->add('ability', 10)   // Some attack power
+        ->add('attack', 5)   // Some attack power
 ]);
 
 $menu = $container->registerComponent(Menu::class);
 $menu->configuration([
-    'text'=> 'Bienvenue a NightCity',
+    'text'=> 'Bienvenue à NightCity',
     'labels'=> [
         'new_game' => "Commencer l'aventure",
         'quit'=> 'Quitter le jeu',
@@ -58,7 +58,7 @@ $introduction->configuration([
         'Votre oncle a besoin de vous, allez lui parler pour en savoir plus.',
         ''
     ],
-    'title'=>'Chapter 1 : Les médoc de Djo',
+    'title'=>'Chapitre 1 : Les médoc de Djo',
     'scrolling'=>false
 ]);
 

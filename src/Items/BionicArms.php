@@ -11,7 +11,7 @@ class BionicArms extends Item_Equippable {
     }
 
     public function description(): string {
-        return 'Des bras bionics';
+        return 'Des bras bioniques, très utiles pour faire à manger, taper les gens et pas que !';
     }
 
     public function body_part(): string { 
@@ -21,7 +21,7 @@ class BionicArms extends Item_Equippable {
     public function statistics(): array
     {
         return [
-            'attack'=> 5
+            'attack' => 5
         ];
     }
 }

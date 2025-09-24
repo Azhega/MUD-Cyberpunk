@@ -185,7 +185,17 @@ class Map extends AbstractComponent
             return;
         }
 
-        $this->map();
+        $this->map(); // affiche la map
+
+        // Texte d'arriver dans la map
+        $current_blueprint = $this->getBlueprint($this->current_position);
+        if (method_exists($current_blueprint, 'messageMove')) {
+            $message = $current_blueprint->messageMove($direction);
+            if (!empty($message)) {
+                $mainCharacter = $this->container->getComponent('character');
+                $mainCharacter->printNpcSingleDial("[MAP]", "\033[34m$message\033[0m");
+            }
+        }
     }
 
     protected function map(): void

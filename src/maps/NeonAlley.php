@@ -18,7 +18,7 @@ class NeonAlley extends Blueprint {
     }
 
     public function description() : string {
-        return 'eee';
+        return 'NeonAlley est la rue la plus éclairée de NightCity';
     }
 
     public function position() : Position {

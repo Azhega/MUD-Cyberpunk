@@ -4,7 +4,6 @@ namespace Ela\MudCyberpunk\Maps;
 
 use Jugid\Staurie\Component\Map\Blueprint;
 use Jugid\Staurie\Game\Position\Position;
-use Ela\MudCyberpunk\Npcs\SDF;
 
 class StaticAvenue extends Blueprint {
     private Position $position;
@@ -18,7 +17,11 @@ class StaticAvenue extends Blueprint {
     }
 
     public function description() : string {
-        return 'eee';
+        return "StaticAvenue est de base l'un des endroits les plus peuplés de NightCity";
+    }
+
+    public function messageMove() : string {
+        return "Vous arrivez au quartier StaticAvenue, il n'y a que 200 ou 300 personnes, l'endroit est calme.";
     }
 
     public function position() : Position {
@@ -26,7 +29,7 @@ class StaticAvenue extends Blueprint {
     }
 
     public function npcs() : array {
-        return [new SDF()];
+        return [];
     }
 
     public function items() : array {

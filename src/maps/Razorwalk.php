@@ -21,6 +21,10 @@ class Razorwalk extends Blueprint {
         return 'eee';
     }
 
+    public function messageMove() : string {
+        return "Vous arrivez au quartier Razorwalk, un sans-abri est installé non loin, assis contre un mur.";
+    }
+
     public function position() : Position {
         return $this->position;
     }

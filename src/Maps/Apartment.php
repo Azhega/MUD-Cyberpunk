@@ -18,7 +18,11 @@ class Apartment extends Blueprint {
     }
 
     public function description() : string {
-        return "L'apartment de l'oncle Djo";
+        return "L'appartement en ruine de l'oncle Djo et son rat";
+    }
+
+    public function messageMove() : string {
+        return "L'oncle Djo est affalé sur son canapé en regardant le mur.";
     }
 
     public function position() : Position {

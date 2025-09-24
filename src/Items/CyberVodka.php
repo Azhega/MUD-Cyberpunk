@@ -11,17 +11,17 @@ class CyberVodka extends Item_Equippable {
     }
 
     public function description(): string {
-        return 'Une magnifique et puissante bouteille de Vodka';
+        return 'Une magnifique et puissante bouteille de Vodka high-tech';
     }
 
     public function body_part(): string { 
-        return 'arms';
+        return 'hand';
     }
 
     public function statistics(): array
     {
         return [
-            'attack'=> 10
+            'attack' => 20
         ];
     }
 }

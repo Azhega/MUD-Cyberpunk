@@ -18,7 +18,11 @@ class SmogStreet extends Blueprint {
     }
 
     public function description() : string {
-        return 'eee';
+        return 'Une rue plutôt sympathique comparée aux autres...';
+    }
+
+    public function messageMove() : string {
+        return "Vous arrivez au quartier SmogStreet sur le trottoir, un gang de sans-abri vous dévisage avec insistance.";
     }
 
     public function position() : Position {
@@ -26,7 +30,7 @@ class SmogStreet extends Blueprint {
     }
 
     public function npcs() : array {
-        return [new SDF()];
+        return [new SDF(), new SDF(), new SDF()];
     }
 
     public function items() : array {

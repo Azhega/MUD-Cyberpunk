@@ -4,23 +4,23 @@ namespace Ela\MudCyberpunk\Items;
 
 use Jugid\Staurie\Game\Item_Equippable;
 
-class Rrhinoshield extends Item_Equippable {
+class Rhinoshield extends Item_Equippable {
     public function name() : string {
-        return 'Rrhinoshield';
+        return 'Rhinoshield';
     }
 
     public function description(): string {
-        return 'Un plastron';
+        return 'Une Relique antique qui est indestructible, RHINOSHIELD !';
     }
 
     public function body_part(): string { 
-        return 'Torso';
+        return 'shield';
     }
 
     public function statistics(): array
     {
         return [
-            'defense'=> 5
+            'defense' => 5
         ];
     }
 }

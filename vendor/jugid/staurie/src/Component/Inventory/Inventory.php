@@ -89,7 +89,6 @@ class Inventory extends AbstractComponent {
         $pp = $this->container->getPrettyPrinter();
 
         $this->inventory[] = $item;
-        $pp->writeLn($item->name() . ' added to your inventory', null, 'green');
     }
 
     final protected function view() : void {

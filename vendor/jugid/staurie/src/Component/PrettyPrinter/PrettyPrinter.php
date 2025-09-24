@@ -6,28 +6,37 @@ use InvalidArgumentException;
 use Jugid\Staurie\Component\AbstractComponent;
 use Jugid\Staurie\Component\Console\Console;
 
-class PrettyPrinter extends AbstractComponent {
+class PrettyPrinter extends AbstractComponent
+{
 
-    public function name() : string {
+    public function name(): string
+    {
         return 'prettyprinter';
     }
 
-    public function require() : array {
+    public function require(): array
+    {
         return [Console::class];
     }
 
-    public function getEventName() : array {
+    public function getEventName(): array
+    {
         return [];
     }
 
-    public function initialize() : void {}
+    public function initialize(): void
+    {
+    }
 
-    protected function action(string $event, array $arguments) : void {}
+    protected function action(string $event, array $arguments): void
+    {
+    }
 
-    public function defaultConfiguration() : array {
+    public function defaultConfiguration(): array
+    {
         return [];
     }
-    
+
     const foreground_colors = [
         'black' => '0;30',
         'dark_gray' => '1;30',
@@ -68,9 +77,9 @@ class PrettyPrinter extends AbstractComponent {
      * Hello world
      * </code>
      */
-    public function write(string $str, $foreground_color = null, $background_color = null, bool $centered = false) : void
+    public function write(string $str, $foreground_color = null, $background_color = null, bool $centered = false): void
     {
-        if($centered) {
+        if ($centered) {
             $columns = $this->getTerminalWidth();
             $str = str_pad($str, $columns, " ", STR_PAD_BOTH);
         }
@@ -88,9 +97,9 @@ class PrettyPrinter extends AbstractComponent {
      * Hello world(\n)
      * </code>
      */
-    public function writeLn(string $str, $foreground_color = null, $background_color = null, bool $centered = false) : void
+    public function writeLn(string $str, $foreground_color = null, $background_color = null, bool $centered = false): void
     {
-        if($centered) {
+        if ($centered) {
             $columns = $this->getTerminalWidth();
             $str = str_pad($str, $columns, " ", STR_PAD_BOTH);
         }
@@ -110,7 +119,7 @@ class PrettyPrinter extends AbstractComponent {
      * -----------(\n)
      * </code>
      */
-    public function writeUnder(string $str, $foreground_color = null, $background_color = null, bool $centered = false) : void 
+    public function writeUnder(string $str, $foreground_color = null, $background_color = null, bool $centered = false): void
     {
         $this->write($str, $foreground_color, $background_color, $centered);
         $this->writeSeparator('-', strlen($str), $centered);
@@ -127,7 +136,7 @@ class PrettyPrinter extends AbstractComponent {
      * (\n)------------------------------(\n)
      * </code>
      */
-    public function writeSeparator(string $separator = '-', int $size = 60, bool $centered = false) 
+    public function writeSeparator(string $separator = '-', int $size = 60, bool $centered = false)
     {
         $this->writeLn('');
         $this->writeLn(str_repeat($separator, $size), null, null, $centered);
@@ -137,31 +146,44 @@ class PrettyPrinter extends AbstractComponent {
      * Use it to write a line with a sleep between each characters
      */
     public function writeScroll(string $str, int $time_milliseconds = 5, bool $centered = false) {
-        if($centered) {
+        if ($centered) {
             $columns = $this->getTerminalWidth();
             $str = str_pad($str, $columns, " ", STR_PAD_BOTH);
         }
 
-        for($i = 0; $i < strlen($str); $i++) {
-            $this->write($str[$i]);
+        // écrire caractère par caractère MAIS garder les séquences ANSI entières
+        $len = strlen($str);
+        for ($i = 0; $i < $len; $i++) {
+            if ($str[$i] === "\033") {
+                // détecter une séquence ANSI et ne pas la découper
+                preg_match('/\033\[[0-9;]*m/', substr($str, $i), $matches);
+                if ($matches) {
+                    echo $matches[0];
+                    $i += strlen($matches[0]) - 1;
+                    continue;
+                }
+            }
+            echo $str[$i];
             usleep($time_milliseconds * 1000);
         }
-        $this->writeln('');
+        echo PHP_EOL;
     }
 
-    public function writeProgressbar(int $value, int $min = 0, int $max = 100, string $label = '',string $barAppareance = '=', int $nbBars = 10, bool $centered = false) {
-        if($value > $max) {
+
+    public function writeProgressbar(int $value, int $min = 0, int $max = 100, string $label = '', string $barAppareance = '=', int $nbBars = 10, bool $centered = false)
+    {
+        if ($value > $max) {
             $value = $max;
         }
 
-        $valuePerCent = round($value*100/$max, 2);
-        $valuePerBar = round($max/$nbBars, 0, PHP_ROUND_HALF_UP);
-        $nbBars = $valuePerBar > 0 ? round($value/$valuePerBar, 0, PHP_ROUND_HALF_UP) : 0;
+        $valuePerCent = round($value * 100 / $max, 2);
+        $valuePerBar = round($max / $nbBars, 0, PHP_ROUND_HALF_UP);
+        $nbBars = $valuePerBar > 0 ? round($value / $valuePerBar, 0, PHP_ROUND_HALF_UP) : 0;
         $nbSpaces = 10 - $nbBars;
 
         $progressBar = sprintf('[%s%s] %.2f%% (%d/%d)', str_repeat($barAppareance, $nbBars), str_repeat(' ', $nbSpaces), $valuePerCent, $value, $max);
 
-        if(!empty($label)) {
+        if (!empty($label)) {
             $progressBar = $label . ' : ' . $progressBar;
         }
 
@@ -204,49 +226,49 @@ class PrettyPrinter extends AbstractComponent {
 
     public function writeTable(array $header, array $lines, bool $with_separator = false)
     {
-        if(count($lines) == 0) {
+        if (count($lines) == 0) {
             throw new InvalidArgumentException('The lines are empty');
         }
 
         $columnsLength = $this->getMaxColumnsLengthForArray($header, $lines);
         $this->printArraySeparator($columnsLength);
         $this->printArrayLine($header, $columnsLength, true);
-       
-        foreach($lines as $line) {
+
+        foreach ($lines as $line) {
             $this->printArrayLine($line, $columnsLength, $with_separator);
         }
 
-        if(!$with_separator) {
+        if (!$with_separator) {
             $this->printArraySeparator($columnsLength);
         }
     }
 
-    private function printArrayLine(array $array, array $columns_length, bool $with_separator = false) : void 
+    private function printArrayLine(array $array, array $columns_length, bool $with_separator = false): void
     {
         $cell_format = '| %s ';
         $end_line = '|';
 
         $line_print = '';
         $column = 0;
-        foreach($array as $cell) {
+        foreach ($array as $cell) {
             $line_print .= sprintf($cell_format, $cell . str_repeat(' ', $columns_length[$column] - strlen($cell)));
             $column++;
         }
-        $line_print.=$end_line;
+        $line_print .= $end_line;
 
         $this->writeln($line_print);
 
-        if($with_separator) {
+        if ($with_separator) {
             $this->printArraySeparator($columns_length);
         }
     }
 
-    private function printArraySeparator(array $columns_length) 
+    private function printArraySeparator(array $columns_length)
     {
         $separator_print = '+%s';
         $separator = '';
 
-        for($column = 0; $column < count($columns_length); $column++) {
+        for ($column = 0; $column < count($columns_length); $column++) {
             $separator .= sprintf($separator_print, str_repeat('-', $columns_length[$column] + 2));
         }
         $separator .= sprintf($separator_print, '');
@@ -261,15 +283,14 @@ class PrettyPrinter extends AbstractComponent {
         $numberOfColumns = count($maxHeader);
         $maxColumns = [];
 
-        for($i = 0; $i < $numberOfColumns; $i++)
-        {
-            $columnLengths = array_map(function($line) use($i) {
+        for ($i = 0; $i < $numberOfColumns; $i++) {
+            $columnLengths = array_map(function ($line) use ($i) {
                 return $line[$i];
             }, $contentMax);
 
             $maxLengthOfColumn = max($columnLengths);
-            
-            if($maxHeader[$i] > $maxLengthOfColumn) {
+
+            if ($maxHeader[$i] > $maxLengthOfColumn) {
                 $maxColumns[] = $maxHeader[$i];
             } else {
                 $maxColumns[] = $maxLengthOfColumn;
@@ -277,20 +298,19 @@ class PrettyPrinter extends AbstractComponent {
         }
 
         return $maxColumns;
-        
+
     }
 
-    private function getColumnsLength(array $array) : array 
+    private function getColumnsLength(array $array): array
     {
         $map_strlen = array_map('strlen', $array);
         return array_values($map_strlen);
     }
 
-    private function getLinesColumnsLength(array $lines) : array 
+    private function getLinesColumnsLength(array $lines): array
     {
         $columns_length = [];
-        foreach($lines as $line) 
-        {
+        foreach ($lines as $line) {
             $columns_length[] = $this->getColumnsLength($line);
         }
 
@@ -300,25 +320,25 @@ class PrettyPrinter extends AbstractComponent {
     /**
      * Get terminal width in a cross-platform way
      */
-    private function getTerminalWidth() : int
+    private function getTerminalWidth(): int
     {
         // Check if we're on Windows
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             // On Windows, try to use mode command
             $output = exec('mode con 2>nul | findstr /C:"Columns"');
             if ($output && preg_match('/Columns:\s*(\d+)/', $output, $matches)) {
-                return (int)$matches[1];
+                return (int) $matches[1];
             }
             // Fallback for Windows
             return 80;
         } else {
             // On Unix/Linux systems, use tput
             $columns = exec('tput cols 2>/dev/null');
-            return (int)$columns ?: 80;
+            return (int) $columns ?: 80;
         }
     }
 
-    private function colored($string, $foreground_color = null, $background_color = null) : string
+    private function colored($string, $foreground_color = null, $background_color = null): string
     {
         $colored_string = "";
 
@@ -330,7 +350,7 @@ class PrettyPrinter extends AbstractComponent {
             $colored_string .= "\033[" . self::background_colors[$background_color] . "m";
         }
 
-        $colored_string .=  $string . "\033[0m";
+        $colored_string .= $string . "\033[0m";
 
         return $colored_string;
     }

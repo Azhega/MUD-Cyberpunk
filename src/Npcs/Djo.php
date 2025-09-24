@@ -21,16 +21,25 @@ class Djo extends Npc {
                 "Maintenant que tu as les bras bioniques, va voir mon fournisseur.....", 
                 "heuuu le pharmacien, chercher les medicaments"
             ];
-        } else {
+        } if ($this->playerHasItem('Bioflex')) {
+            return [
+                "File-moi ça !",
+                "...",
+                "Tu te fous de moi ?! Ce ne sont pas les bons !",
+                "Tu m'apportes de la came de rue au lieu de mes vrais cachets ?!",
+                "J'vais te montrer ce que ça fait de souffrir, petit con !",
+                "VIENS LÀ !"
+            ];
+        }else {
             $this->giveItem(new BionicArms());
             return [
                 "Eh...",
-                "mon petit...",
-                "tu vois bien, hein, le vieux Djo, il tient plus. Sans mes cachets, j'suis foutu...",
-                "Le souffle me lache, la tete tourne...",
+                "Mon petit...",
+                "Tu vois bien, hein, le vieux Djo, il tient plus. Sans mes cachets, j'suis foutu...",
+                "Le souffle me lâche, ma tête tourne...",
                 "Il faut que tu m'aides, vite, sinon demain...",
-                "demain je ne suis plus la. Apporte-les-moi, c'est tout ce qui me garde en vie.",
-                "Tiens des bras bioniques pour t'aider a traverser la ville pour aller a la \"pharmacie\"."
+                "Demain je ne serai plus là. Apporte-les-moi, c'est tout ce qui me garde en vie.",
+                "Tiens des bras bioniques pour t'aider à traverser la ville pour aller à la \"pharmacie\"."
             ];
         }
     }

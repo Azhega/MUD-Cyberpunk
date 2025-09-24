@@ -14,11 +14,11 @@ class StreetNorth extends Blueprint {
     }
 
     public function name() : string {
-        return 'Street';
+        return 'StreetNorth';
     }
 
     public function description() : string {
-        return 'eee';
+        return "c'est un bon endroit pour dormir quand on dort à la rue";
     }
 
     public function position() : Position {

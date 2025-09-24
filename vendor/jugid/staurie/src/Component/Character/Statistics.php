@@ -12,7 +12,7 @@ class Statistics {
         $default_stats = new Statistics();
         return $default_stats->addDefault('health', 100)
                              ->addDefault('chance', 0)
-                             ->addDefault('ability', 0)
+                             ->addDefault('attack', 0)
                              ->addDefault('wisdom', 0)
                              ->addDefault('defense', 0);
     }
