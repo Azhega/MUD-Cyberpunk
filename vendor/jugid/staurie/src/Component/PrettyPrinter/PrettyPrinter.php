@@ -71,7 +71,7 @@ class PrettyPrinter extends AbstractComponent {
     public function write(string $str, $foreground_color = null, $background_color = null, bool $centered = false) : void
     {
         if($centered) {
-            $columns = exec('tput cols');
+            $columns = $this->getTerminalWidth();
             $str = str_pad($str, $columns, " ", STR_PAD_BOTH);
         }
 
@@ -91,7 +91,7 @@ class PrettyPrinter extends AbstractComponent {
     public function writeLn(string $str, $foreground_color = null, $background_color = null, bool $centered = false) : void
     {
         if($centered) {
-            $columns = exec('tput cols');
+            $columns = $this->getTerminalWidth();
             $str = str_pad($str, $columns, " ", STR_PAD_BOTH);
         }
 
@@ -138,7 +138,7 @@ class PrettyPrinter extends AbstractComponent {
      */
     public function writeScroll(string $str, int $time_milliseconds = 5, bool $centered = false) {
         if($centered) {
-            $columns = exec('tput cols');
+            $columns = $this->getTerminalWidth();
             $str = str_pad($str, $columns, " ", STR_PAD_BOTH);
         }
 
@@ -295,6 +295,27 @@ class PrettyPrinter extends AbstractComponent {
         }
 
         return $columns_length;
+    }
+
+    /**
+     * Get terminal width in a cross-platform way
+     */
+    private function getTerminalWidth() : int
+    {
+        // Check if we're on Windows
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+            // On Windows, try to use mode command
+            $output = exec('mode con 2>nul | findstr /C:"Columns"');
+            if ($output && preg_match('/Columns:\s*(\d+)/', $output, $matches)) {
+                return (int)$matches[1];
+            }
+            // Fallback for Windows
+            return 80;
+        } else {
+            // On Unix/Linux systems, use tput
+            $columns = exec('tput cols 2>/dev/null');
+            return (int)$columns ?: 80;
+        }
     }
 
     private function colored($string, $foreground_color = null, $background_color = null) : string

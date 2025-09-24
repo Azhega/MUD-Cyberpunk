@@ -4,6 +4,7 @@ namespace Ela\MudCyberpunk\Maps;
 
 use Jugid\Staurie\Component\Map\Blueprint;
 use Jugid\Staurie\Game\Position\Position;
+use Ela\MudCyberpunk\Npcs\SDF;
 
 class StreetNorth extends Blueprint {
     private Position $position;
@@ -25,7 +26,7 @@ class StreetNorth extends Blueprint {
     }
 
     public function npcs() : array {
-        return [];
+        return [new SDF()];
     }
 
     public function items() : array {

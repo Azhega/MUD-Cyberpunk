@@ -14,7 +14,7 @@ class Rrhinoshield extends Item_Equippable {
     }
 
     public function body_part(): string { 
-        return 'plastron';
+        return 'Torso';
     }
 
     public function statistics(): array
