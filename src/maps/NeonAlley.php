@@ -6,15 +6,15 @@ use Jugid\Staurie\Component\Map\Blueprint;
 use Jugid\Staurie\Game\Position\Position;
 use Ela\MudCyberpunk\Npcs\SDF;
 
-class StreetNorth extends Blueprint {
+class NeonAlley extends Blueprint {
     private Position $position;
 
     public function __construct() {
-        $this->position = new Position(2,1);
+        $this->position = new Position(1,0);
     }
 
     public function name() : string {
-        return 'Street';
+        return 'NeonAlley';
     }
 
     public function description() : string {

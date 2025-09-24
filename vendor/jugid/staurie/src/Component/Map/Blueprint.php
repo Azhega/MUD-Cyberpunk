@@ -104,6 +104,14 @@ abstract class Blueprint implements Containerable, Initializable, Describable, P
         unset($this->monsters[$monster_name]);
     }
 
+    public function killNpc(string $npc_name) : void {
+        if(!isset($this->npcs[$npc_name])) {
+            return;
+        }
+
+        unset($this->npcs[$npc_name]);
+    }
+
     abstract public function npcs() : array;
     abstract public function items() : array;
     abstract public function monsters() : array;

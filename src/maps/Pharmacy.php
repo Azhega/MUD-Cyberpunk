@@ -4,21 +4,21 @@ namespace Ela\MudCyberpunk\Maps;
 
 use Jugid\Staurie\Component\Map\Blueprint;
 use Jugid\Staurie\Game\Position\Position;
-use Ela\MudCyberpunk\Npcs\SDF;
+use Ela\MudCyberpunk\Npcs\Doc;
 
-class StreetNorth extends Blueprint {
+class Pharmacy extends Blueprint {
     private Position $position;
 
     public function __construct() {
-        $this->position = new Position(2,1);
+        $this->position = new Position(0,1);
     }
 
     public function name() : string {
-        return 'Street';
+        return 'Pharmacy';
     }
 
     public function description() : string {
-        return 'eee';
+        return 'Bienvenue à la pharmacie.';
     }
 
     public function position() : Position {
@@ -26,7 +26,7 @@ class StreetNorth extends Blueprint {
     }
 
     public function npcs() : array {
-        return [new SDF(), new SDF()];
+        return [new Doc()];
     }
 
     public function items() : array {

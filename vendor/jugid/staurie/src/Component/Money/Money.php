@@ -16,7 +16,7 @@ class Money extends AbstractComponent {
     }
 
     final public function getEventName() : array {
-        return ['money.show'];
+        return ['money.show', 'money.earn', 'money.loss'];
     }
 
     final public function require() : array {
@@ -38,6 +38,12 @@ class Money extends AbstractComponent {
 
     final protected function action(string $event, array $arguments) : void {
         switch($event) {
+            case 'money.earn':
+                $this->earn($arguments['amount']);
+                break;
+            case 'money.loss':
+                $this->loss($arguments['amount']);
+                break;
             default:
                 $this->eventToAction($event);
                 break;
@@ -52,7 +58,7 @@ class Money extends AbstractComponent {
         );
     }
 
-    final protected function earn(int $amount) {
+    final public function earn(int $amount) {
         $this->amount += $amount;
     }
 
@@ -64,5 +70,9 @@ class Money extends AbstractComponent {
         }
         
         $this->amount -= $amount;
+    }
+
+    public function getAmount() {
+        return $this->amount;
     }
 }

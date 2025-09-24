@@ -293,6 +293,7 @@ class MainCharacter extends AbstractComponent {
                 'attack' => 'ability',
                 'defense' => 'defense'
             ],
+            'npc_money_reward' => 25, // Money earned when defeating NPCs
             'health_reset_after_fight' => true,
             'action_at_death' => null, // null = game over, or Position object to teleport
             'equipment' => [
@@ -408,14 +409,12 @@ class MainCharacter extends AbstractComponent {
                     $level->verify();
                 }
             } else {
-                // NPCs give some experience but remain on the map
-                $level = $this->container->getComponent('level');
-                $level->experience += 15; // Default NPC experience
-                // Check if level component has verify method before calling
-                if(method_exists($level, 'verify')) {
-                    $level->verify();
-                }
-                $pp->writeLn("You defeated $target_name but they remain on the map.", 'yellow');
+                // NPCs give money instead of experience and are removed from the map
+                $blueprint->killNpc($target_name);
+                $money_reward = $this->config['npc_money_reward'];
+                $this->container->dispatcher()->dispatch('money.earn', ['amount' => $money_reward]);
+                $money_name = $this->container->getComponent('money')->config['name'];
+                $pp->writeLn("You defeated $target_name and earned $money_reward $money_name!", 'green');
             }
         } else if($player_health <= 0) {
             $pp->writeLn('You are dead. Not ready for that...');

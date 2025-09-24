@@ -18,7 +18,7 @@ class SDF extends Npc {
             "Zeke", "Nyro", "Havoc", "Venom", "Ghost",
             "Kali", "Vector", "Riot", "Talon", "Vapor",
             "Sable", "Onyx", "Drift", "Haze", "Crash",
-            "Ivy", "Volt", "Rune", "Skull", "Pulse",
+            "Ivy", "Antoine", "Rune", "Skull", "Pulse",
             "Raze", "Shard", "Lynx", "Dusk", "Trix",
             "Vexx", "Aria", "NovaX", "Byte", "Spectre"
         ];
@@ -30,16 +30,16 @@ class SDF extends Npc {
         return $this->name;
     }
 
-    public function description() : string {
+    public function description(): string {
         return "SDF de NightCity";
     }
 
-    public function speak() : string {
+    public function speak(): string|array {
         $lines = [
             ["He...", "T'as pas une puce a gratter ?", "Ma tete explose..."],
             ["Les neons...", "Ils me parlent, mec...", "Ils chuchotent des nombres..."],
             ["J'ai vendu mon sommeil contre du chrome...", "Tu veux en acheter ?"],
-            ["Le beton fond sous mes pieds, regarde !", "Regarde !"],
+            ["Le beton fond sous mes pieds, regarde !", "REGARDE !"],
             ["Shhh...", "Faut pas qu'ils m'entendent...", "Les drones me suivent partout..."],
             ["Encore un credit et je me branche direct dans le reve..."],
             ["Tu sens ca ?", "Le reseau...", "Il coule dans mes veines..."],

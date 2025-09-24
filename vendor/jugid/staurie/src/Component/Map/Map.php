@@ -15,7 +15,8 @@ use Jugid\Staurie\Game\Item;
 use Jugid\Staurie\Game\Monster;
 use Jugid\Staurie\Game\Npc;
 
-class Map extends AbstractComponent {
+class Map extends AbstractComponent
+{
 
     private const CONTAINER_BLUEPRINT = 'blueprint';
     private const CHAR_PER_LINE = 100;
@@ -24,51 +25,56 @@ class Map extends AbstractComponent {
 
     private MapPrinter $printer;
 
-    final public function name() : string {
+    final public function name(): string
+    {
         return 'map';
     }
 
-    final public function getEventName() : array {
+    final public function getEventName(): array
+    {
         return ['map.view', 'map.move', 'map.compass', 'map.map'];
     }
 
-    final public function require() : array {
+    final public function require(): array
+    {
         return [PrettyPrinter::class];
     }
-    
-    final public function initialize() : void {
 
-        if(null === $this->config['directory'] || null === $this->config['namespace']) {
+    final public function initialize(): void
+    {
+
+        if (null === $this->config['directory'] || null === $this->config['namespace']) {
             throw new LogicException('Option directory or namespace is no configured. Please use the configuration().');
         }
 
         $console = $this->container->getConsole();
         $console->addFunction(new ViewFunction());
 
-        if($this->config['navigation']) {
+        if ($this->config['navigation']) {
             $console->addFunction(new MoveFunction());
-            
-            if($this->config['compass_enable']) {
+
+            if ($this->config['compass_enable']) {
                 $console->addFunction(new CompassFunction());
             }
 
-            if($this->config['map_enable']) {
+            if ($this->config['map_enable']) {
                 $console->addFunction(new MapFunction());
             }
         }
-        
+
         $this->initializeBlueprintsFromFiles();
-        $this->current_position = new Position($this->config['x_start'],$this->config['y_start']);
-        
-        if(null === $this->getBlueprint($this->current_position)) {
-            throw new LogicException('There is no map at start position which is '. $this->current_position);
+        $this->current_position = new Position($this->config['x_start'], $this->config['y_start']);
+
+        if (null === $this->getBlueprint($this->current_position)) {
+            throw new LogicException('There is no map at start position which is ' . $this->current_position);
         }
 
         $this->container->register('printer', MapPrinter::class);
     }
 
-    final protected function action(string $event, array $arguments) : void {
-        switch($event) {
+    final protected function action(string $event, array $arguments): void
+    {
+        switch ($event) {
             case 'map.move':
                 $this->move($arguments['direction']);
                 break;
@@ -78,13 +84,18 @@ class Map extends AbstractComponent {
         }
     }
 
-    protected function compass() : void {
-        
-        $map_names = [];
-        $directions = ['north'=> ['x' => 0,  'y' => 1],'south'=> ['x' => 0,  'y' => -1],
-                       'west' => ['x' => -1, 'y' => 0],'east' => ['x' => 1,  'y' => 0]];
+    protected function compass(): void
+    {
 
-        foreach($directions as $direction => $adds) {
+        $map_names = [];
+        $directions = [
+            'north' => ['x' => 0, 'y' => 1],
+            'south' => ['x' => 0, 'y' => -1],
+            'west' => ['x' => -1, 'y' => 0],
+            'east' => ['x' => 1, 'y' => 0]
+        ];
+
+        foreach ($directions as $direction => $adds) {
             $positionToBlueprint = Position::get($this->current_position->x + $adds['x'], $this->current_position->y + $adds['y']);
             $blueprint = $this->getBlueprint($positionToBlueprint);
 
@@ -94,111 +105,121 @@ class Map extends AbstractComponent {
         $this->container->getPrettyPrinter()->writeTable(['Direction', 'Map'], $map_names);
     }
 
-    protected function view() : void {
+    protected function view(): void
+    {
         $pp = $this->container->getPrettyPrinter();
         $current_blueprint = $this->getBlueprint($this->current_position);
 
-        if($current_blueprint === null) {
-            throw new LogicException('No map at position '. $this->current_position . '. You should think about creating one.');
+        if ($current_blueprint === null) {
+            throw new LogicException('No map at position ' . $this->current_position . '. You should think about creating one.');
         }
 
         $pp->writeUnder('Map view', 'green');
         $description = str_split($current_blueprint->description(), self::CHAR_PER_LINE);
         $description_rows = [];
 
-        foreach($description as $desc) {
+        foreach ($description as $desc) {
             $description_rows[] = [$desc];
         }
 
-        $pp->writeTable([$current_blueprint->name() . ' ' . $this->current_position],$description_rows);
+        $pp->writeTable([$current_blueprint->name() . ' ' . $this->current_position], $description_rows);
 
-        if(!empty($current_blueprint->getNpcs())) {
+        if (!empty($current_blueprint->getNpcs())) {
             $npcs = [];
-            foreach($current_blueprint->getNpcs() as $npc) {
-                if(!$npc instanceof Npc) {
-                   continue; 
+            foreach ($current_blueprint->getNpcs() as $npc) {
+                if (!$npc instanceof Npc) {
+                    continue;
                 }
 
                 $npcs[] = [$npc->name(), $npc->description()];
             }
-    
+
             $pp->writeLn('There are npcs to speak with', 'green');
             $pp->writeTable(['Name', 'Description'], $npcs);
         }
-        
-        if(!empty($current_blueprint->getItems())) {
+
+        if (!empty($current_blueprint->getItems())) {
             $items = [];
-            foreach($current_blueprint->getItems() as $item) {
+            foreach ($current_blueprint->getItems() as $item) {
                 $stats = [];
-                if(!$item instanceof Item) {
-                    continue; 
-                 }
-                 
-                foreach($item->statistics() as $stat=>$value) {
-                    $stats[] = $stat.' : '.$value;
+                if (!$item instanceof Item) {
+                    continue;
                 }
 
-                $items[] = [$item->name(), $item->description(), implode(', ', $stats) ];
+                foreach ($item->statistics() as $stat => $value) {
+                    $stats[] = $stat . ' : ' . $value;
+                }
+
+                $items[] = [$item->name(), $item->description(), implode(', ', $stats)];
             }
 
             $pp->writeLn('There are items to take', 'green');
             $pp->writeTable(['Name', 'Description', 'Statistics'], $items);
         }
 
-        if(!empty($current_blueprint->getMonsters())) {
+        if (!empty($current_blueprint->getMonsters())) {
             $monsters = [];
-            foreach($current_blueprint->getMonsters() as $monster) {
-                if(!$monster instanceof Monster) {
-                   continue; 
+            foreach ($current_blueprint->getMonsters() as $monster) {
+                if (!$monster instanceof Monster) {
+                    continue;
                 }
 
                 $monsters[] = [$monster->name(), $monster->description(), $monster->level()];
             }
-    
+
             $pp->writeLn('There are monsters to fight with', 'green');
             $pp->writeTable(['Name', 'Description', 'Level'], $monsters);
         }
     }
 
-    protected function move(string $direction) : void {
+    protected function move(string $direction): void
+    {
         $pp = $this->container->getPrettyPrinter();
         $previousPosition = clone $this->current_position;
-        $go_function = 'go'. ucfirst($direction);
+        $go_function = 'go' . ucfirst($direction);
         $this->current_position->$go_function();
 
-        if(null === $this->getBlueprint($this->current_position)) {
-            $pp->writeLn('Something prevents you to go to the '.$direction, null, 'red');
+        if (null === $this->getBlueprint($this->current_position)) {
+            $pp->writeLn('Something prevents you to go to the ' . $direction, null, 'red');
             $this->current_position = $previousPosition;
-        } 
+            return;
+        }
+
+        $this->map();
     }
 
-    protected function map() : void {
-        $mapPrinter = $this->container->get('printer','MapPrinter');
+    protected function map(): void
+    {
+        $mapPrinter = $this->container->get('printer', 'MapPrinter');
         $mapPrinter->print();
     }
 
-    public function teleport(Position $position) : void {
+    public function teleport(Position $position): void
+    {
         $this->current_position = $position;
     }
 
-    final public function getCurrentBlueprint() : Blueprint {
+    final public function getCurrentBlueprint(): Blueprint
+    {
         return $this->getBlueprint($this->current_position);
     }
 
-    final public function getBlueprint(Position $position) : ?Blueprint {
+    final public function getBlueprint(Position $position): ?Blueprint
+    {
         $blueprints = $this->container->gets(self::CONTAINER_BLUEPRINT);
 
-        foreach($blueprints as $bp) {
-            if($bp->position()->isSame($position)) {
+        foreach ($blueprints as $bp) {
+            if ($bp->position()->isSame($position)) {
                 return $bp;
             }
         }
         return null;
     }
 
-    final public function addBlueprint(string $bp_class) : self {
+    final public function addBlueprint(string $bp_class): self
+    {
 
-        if(!is_subclass_of($bp_class, Blueprint::class)) {
+        if (!is_subclass_of($bp_class, Blueprint::class)) {
             throw new LogicException('Blueprint for map component should extends ' . Blueprint::class);
         }
 
@@ -206,56 +227,61 @@ class Map extends AbstractComponent {
         return $this;
     }
 
-    private function initializeBlueprintsFromFiles() : void {
+    private function initializeBlueprintsFromFiles(): void
+    {
         $finder = new Finder();
         $finder->files()->in($this->config['directory'])->name('*.php');
 
         foreach ($finder as $file) {
             $bp_file = str_replace('.php', '', $file->getRelativePathname());
             $bp_class = $this->fileDirectoryToNamespace($bp_file);
-            
+
             $this->addBlueprint($bp_class);
         }
 
         $this->initializeBlueprints();
     }
 
-    private function fileDirectoryToNamespace(string $file) : string {
+    private function fileDirectoryToNamespace(string $file): string
+    {
 
         $file[0] = ucfirst($file[0]);
 
-        for($i = 1; $i < strlen($file)-1; $i++) {
-            if($file[$i] === '/' && isset($file[$i+1]) && ctype_alpha($file[$i+1])) {
-                $file[$i+1] = ucfirst($file[$i+1]);
+        for ($i = 1; $i < strlen($file) - 1; $i++) {
+            if ($file[$i] === '/' && isset($file[$i + 1]) && ctype_alpha($file[$i + 1])) {
+                $file[$i + 1] = ucfirst($file[$i + 1]);
                 $i++;
             }
         }
         $namespace = $this->config['namespace'];
-        return $namespace . '\\'.str_replace('/', '\\', $file);
+        return $namespace . '\\' . str_replace('/', '\\', $file);
     }
 
-    private function initializeBlueprints() : void {
+    private function initializeBlueprints(): void
+    {
         $blueprints = $this->container->gets(self::CONTAINER_BLUEPRINT);
-        foreach($blueprints as $blueprint) {
+        foreach ($blueprints as $blueprint) {
             $blueprint->initialize();
         }
     }
 
-    public function getBlueprints() : array {
+    public function getBlueprints(): array
+    {
         return $this->container->gets(self::CONTAINER_BLUEPRINT);
     }
 
-    final public function defaultConfiguration() : array {
+    final public function defaultConfiguration(): array
+    {
         return [
-            'directory'=> null,
-            'namespace'=> null,
-            'navigation'=> true,
-            'map_enable'=> true,
-            'compass_enable'=> true,
-            'x_start'=> 0,
-            'y_start'=> 0
+            'directory' => null,
+            'namespace' => null,
+            'navigation' => true,
+            'map_enable' => true,
+            'compass_enable' => true,
+            'x_start' => 0,
+            'y_start' => 0
         ];
     }
 
-    
+
 }

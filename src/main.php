@@ -20,7 +20,7 @@ $staurie = new Staurie('Cyberpunk');
 $staurie->register([
     Console::class,
     PrettyPrinter::class,
-    MainCharacter::class,
+    // MainCharacter::class,
     Inventory::class,
     Level::class
 ]);

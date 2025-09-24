@@ -16,6 +16,9 @@ class Doc extends Npc {
     }
 
     public function speak() : string|array {
-        return 'attente Ethan :)';
+        $money = $this->container->getComponent('money');
+        $currentAmount = $money->getAmount();
+        $calculatedValue = $currentAmount + 1;
+        return $calculatedValue;
     }
 }
